@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>জ্ঞানের আসর (GK Quiz)</title>
+  <meta name="description" content="বাংলা সাধারণ জ্ঞানের আকর্ষণীয় কুইজ গেম — ক্লাসিক ও সারভাইভাল মোড, ১৫ সেকেন্ডের টাইমার, লাইফলাইন এবং সাউন্ড ইফেক্টসহ।" />
+  <meta property="og:title" content="জ্ঞানের আসর (GK Quiz)" />
+  <meta property="og:description" content="বাংলা সাধারণ জ্ঞানের আকর্ষণীয় কুইজ গেম।" />
+  <meta property="og:type" content="website" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-canvas: #0b0f19;
+      --bg-surface: #131a2b;
+      --bg-surface-elevated: #1a243b;
+      --bg-surface-hover: #212e4b;
+      --border-hairline: rgba(255, 255, 255, 0.09);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text-primary: #f4f7fb;
+      --text-secondary: #a3b1cc;
+      --text-muted: #70809e;
+      --accent-gold: #f59e0b;
+      --accent-gold-soft: rgba(245, 158, 11, 0.14);
+      --accent-gold-border: rgba(245, 158, 11, 0.45);
+      --accent-emerald: #10b981;
+      --accent-emerald-soft: rgba(16, 185, 129, 0.15);
+      --accent-emerald-border: rgba(16, 185, 129, 0.55);
+      --accent-coral: #ef4444;
+      --accent-coral-soft: rgba(239, 68, 68, 0.15);
+      --accent-coral-border: rgba(239, 68, 68, 0.55);
+      --accent-sky: #38bdf8;
+      --accent-sky-soft: rgba(56, 189, 248, 0.14);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --font-bn: 'Hind Siliguri', 'Noto Sans Bengali', system-ui, -apple-system, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 16px;
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-bn);
+      background-color: var(--bg-canvas);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(245, 158, 11, 0.11), transparent 70%),
+        radial-gradient(ellipse 60% 45% at 95% 95%, rgba(16, 185, 129, 0.08), transparent 70%);
+      color: var(--text-primary);
+      min-height: 100dvh;
+      line-height: 1.55;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    button {
+      font-family: inherit;
+      color: inherit;
+      background: none;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--accent-gold);
+      outline-offset: 2px;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Confetti Canvas */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* App Shell */
+    .app-shell {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: max(12px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Header */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0 18px;
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0b0f19;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+    }
+
+    .brand-title {
+      font-size: clamp(1.1rem, 3vw, 1.35rem);
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-primary);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .best-score-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      transition: background-color 0.16s var(--ease-out), color 0.16s var(--ease-out), transform 0.14s var(--ease-out);
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    .icon-btn.muted {
+      color: var(--text-muted);
+    }
+
+    /* Screen Transitions */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .screen.active {
+      display: flex;
+      animation: screenEnter 0.26s var(--ease-out) both;
+    }
+
+    @keyframes screenEnter {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Home Screen */
+    .hero-block {
+      text-align: center;
+      padding: 6px 0 22px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.75rem, 4.5vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-primary);
+      text-wrap: balance;
+      margin-bottom: 8px;
+    }
+
+    .hero-title span {
+      color: var(--accent-gold);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+      color: var(--text-secondary);
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .section-block {
+      margin-bottom: 22px;
+    }
+
+    .section-label {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Mode Selector Grid */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 540px) {
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .select-card {
+      text-align: left;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      min-height: 76px;
+      transition: background-color 0.16s var(--ease-out), border-color 0.16s var(--ease-out), transform 0.15s var(--ease-out), box-shadow 0.2s var(--ease-out);
+      position: relative;
+    }
+
+    .select-card:hover {
+      background-color: var(--bg-surface-elevated);
+      border-color: var(--border-strong);
+    }
+
+    .select-card:active {
+      transform: scale(0.985);
+    }
+
+    .select-card.selected {
+      background-color: var(--accent-gold-soft);
+      border-color: var(--accent-gold-border);
+      box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.25), 0 8px 24px rgba(245, 158, 11, 0.08);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: background-color 0.16s, color 0.16s;
+    }
+
+    .select-card.selected .card-icon {
+      background-color: var(--accent-gold);
+      color: #0b0f19;
+    }
+
+    .card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .selected-check {
+      color: var(--accent-gold);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.15s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .select-card.selected .selected-check {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Category Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    @media (min-width: 680px) {
+      .category-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 400px) {
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cat-btn {
+      text-align: left;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 13px 14px;
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      transition: background-color 0.16s var(--ease-out), border-color 0.16s var(--ease-out), transform 0.14s var(--ease-out);
+    }
+
+    .cat-btn.cat-wide {
+      grid-column: 1 / -1;
+    }
+
+    @media (min-width: 680px) {
+      .cat-btn.cat-wide {
+        grid-column: span 2;
+      }
+    }
+
+    .cat-btn:hover {
+      background-color: var(--bg-surface-elevated);
+      border-color: var(--border-strong);
+    }
+
+    .cat-btn:active {
+      transform: scale(0.985);
+    }
+
+    .cat-btn.selected {
+      background-color: var(--accent-emerald-soft);
+      border-color: var(--accent-emerald-border);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.2);
+    }
+
+    .cat-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .cat-btn.selected .cat-icon {
+      background-color: var(--accent-emerald);
+      color: #06281e;
+    }
+
+    .cat-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .cat-name {
+      font-size: 0.96rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .cat-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .cat-btn.selected .cat-count {
+      color: #6ee7b7;
+    }
+
+    /* Primary CTA */
+    .start-wrap {
+      margin-top: 6px;
+      margin-bottom: 20px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      min-height: 54px;
+      padding: 14px 24px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f59e0b 0%, #ea8c00 100%);
+      color: #0b0f19;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 8px 26px rgba(245, 158, 11, 0.25);
+      transition: transform 0.15s var(--ease-out), box-shadow 0.2s var(--ease-out), filter 0.16s;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.06);
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.34);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.985);
+    }
+
+    .btn-secondary {
+      min-height: 50px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-strong);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.15s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-surface-hover);
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.985);
+    }
+
+    /* Footer Summary on Home */
+    .home-stats-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-hairline);
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: auto;
+    }
+
+    .home-stats-strip strong {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* Quiz Screen HUD */
+    .quiz-hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .quit-btn {
+      min-height: 40px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .quit-btn:hover {
+      background-color: var(--bg-surface-hover);
+      color: var(--text-primary);
+    }
+
+    .hud-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hud-meta strong {
+      color: var(--text-primary);
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .lives-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--accent-coral);
+    }
+
+    .heart-svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.25s var(--ease-out), opacity 0.25s;
+    }
+
+    .heart-svg.lost {
+      opacity: 0.25;
+      transform: scale(0.82);
+    }
+
+    .streak-display {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      transition: transform 0.2s var(--ease-out);
+    }
+
+    .streak-display.hot {
+      transform: scale(1.06);
+    }
+
+    .score-display {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .score-display span {
+      color: var(--accent-emerald);
+    }
+
+    /* Timer Bar */
+    .timer-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .timer-track {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background-color: var(--bg-surface-elevated);
+      overflow: hidden;
+      border: 1px solid var(--border-hairline);
+    }
+
+    .timer-fill {
+      width: 100%;
+      height: 100%;
+      transform-origin: left center;
+      transform: scaleX(1);
+      background-color: var(--accent-emerald);
+      transition: background-color 0.25s ease;
+      will-change: transform;
+    }
+
+    .timer-fill.warning {
+      background-color: var(--accent-gold);
+    }
+
+    .timer-fill.danger {
+      background-color: var(--accent-coral);
+    }
+
+    .timer-label {
+      min-width: 52px;
+      text-align: right;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    .timer-label.danger {
+      color: var(--accent-coral);
+      animation: pulseUrgent 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseUrgent {
+      from { opacity: 0.78; transform: scale(1); }
+      to { opacity: 1; transform: scale(1.07); }
+    }
+
+    /* Question Card */
+    .question-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: clamp(18px, 3.5vw, 28px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .question-card.card-enter {
+      animation: cardSlideIn 0.24s var(--ease-out) both;
+    }
+
+    @keyframes cardSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .question-text {
+      font-size: clamp(1.15rem, 2.8vw, 1.45rem);
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--text-primary);
+      text-wrap: balance;
+    }
+
+    /* Options Grid */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
+    }
+
+    @media (min-width: 640px) {
+      .options-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+    }
+
+    .option-btn {
+      width: 100%;
+      min-height: 56px;
+      padding: 13px 15px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-hairline);
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.4;
+      color: var(--text-primary);
+      transition: background-color 0.15s var(--ease-out), border-color 0.15s var(--ease-out), transform 0.14s var(--ease-out), opacity 0.2s;
+    }
+
+    .option-btn:not(:disabled):hover {
+      background-color: var(--bg-surface-hover);
+      border-color: var(--border-strong);
+    }
+
+    .option-btn:not(:disabled):active {
+      transform: scale(0.985);
+    }
+
+    .option-key {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.06);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .option-text {
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .option-status-icon {
+      flex-shrink: 0;
+      display: none;
+    }
+
+    .option-btn.eliminated {
+      opacity: 0.22;
+      pointer-events: none;
+      text-decoration: line-through;
+    }
+
+    .option-btn.correct {
+      background-color: var(--accent-emerald-soft);
+      border-color: var(--accent-emerald-border);
+      color: #ecfdf5;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      animation: correctPop 0.3s var(--ease-out);
+    }
+
+    .option-btn.correct .option-key {
+      background-color: var(--accent-emerald);
+      color: #052e16;
+    }
+
+    .option-btn.correct .option-status-icon {
+      display: block;
+      color: var(--accent-emerald);
+    }
+
+    .option-btn.wrong {
+      background-color: var(--accent-coral-soft);
+      border-color: var(--accent-coral-border);
+      color: #fef2f2;
+      box-shadow: 0 0 18px rgba(239, 68, 68, 0.18);
+      animation: wrongShake 0.32s ease;
+    }
+
+    .option-btn.wrong .option-key {
+      background-color: var(--accent-coral);
+      color: #ffffff;
+    }
+
+    .option-btn.wrong .option-status-icon {
+      display: block;
+      color: var(--accent-coral);
+    }
+
+    @keyframes correctPop {
+      0% { transform: scale(0.98); }
+      50% { transform: scale(1.015); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes wrongShake {
+      0%, 100% { transform: translateX(0); }
+      22% { transform: translateX(-5px); }
+      45% { transform: translateX(5px); }
+      70% { transform: translateX(-3px); }
+    }
+
+    /* Feedback & 1-Line Explanation */
+    .feedback-panel {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      padding: 15px 16px;
+      border-radius: var(--radius-md);
+      background-color: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-hairline);
+      animation: screenEnter 0.2s var(--ease-out) both;
+    }
+
+    .feedback-panel.show {
+      display: flex;
+    }
+
+    .feedback-panel.is-correct {
+      background-color: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    .feedback-panel.is-wrong {
+      background-color: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
+    .feedback-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .feedback-heading {
+      font-size: 0.98rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .feedback-panel.is-correct .feedback-heading {
+      color: #34d399;
+    }
+
+    .feedback-panel.is-wrong .feedback-heading {
+      color: #f87171;
+    }
+
+    .points-breakdown {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+    }
+
+    .explanation-text {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    .next-btn {
+      align-self: flex-end;
+      min-height: 44px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      background-color: var(--accent-gold);
+      color: #0b0f19;
+      font-size: 0.96rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: filter 0.15s, transform 0.15s;
+    }
+
+    .next-btn:hover {
+      filter: brightness(1.07);
+    }
+
+    .next-btn:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-width: 520px) {
+      .next-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    /* Lifelines Bar */
+    .lifelines-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .lifeline-btn {
+      min-height: 48px;
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: background-color 0.15s, border-color 0.15s, transform 0.14s, opacity 0.2s;
+    }
+
+    @media (max-width: 440px) {
+      .lifeline-btn {
+        flex-direction: column;
+        gap: 3px;
+        padding: 9px 6px;
+        font-size: 0.8rem;
+        min-height: 54px;
+      }
+    }
+
+    .lifeline-btn:not(:disabled):hover {
+      background-color: var(--bg-surface-elevated);
+      border-color: var(--accent-sky);
+      color: #e0f2fe;
+    }
+
+    .lifeline-btn:not(:disabled):active {
+      transform: scale(0.97);
+    }
+
+    .lifeline-btn.used,
+    .lifeline-btn:disabled {
+      opacity: 0.36;
+      background-color: var(--bg-surface);
+    }
+
+    .lifeline-btn.used .lifeline-label {
+      text-decoration: line-through;
+    }
+
+    .lifeline-icon {
+      color: var(--accent-sky);
+      flex-shrink: 0;
+    }
+
+    .lifeline-btn.used .lifeline-icon {
+      color: var(--text-muted);
+    }
+
+    /* Result Screen */
+    .result-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: clamp(22px, 4vw, 34px);
+      text-align: center;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .result-emblem {
+      width: 72px;
+      height: 72px;
+      border-radius: 20px;
+      background: var(--accent-gold-soft);
+      border: 1px solid var(--accent-gold-border);
+      color: var(--accent-gold);
+      display: grid;
+      place-items: center;
+    }
+
+    .result-title {
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text-primary);
+    }
+
+    .result-subtitle {
+      font-size: 0.96rem;
+      color: var(--text-secondary);
+      max-width: 440px;
+    }
+
+    .new-record-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      background-color: var(--accent-gold-soft);
+      border: 1px solid var(--accent-gold-border);
+    }
+
+    .new-record-banner.show {
+      display: inline-flex;
+      animation: correctPop 0.4s var(--ease-out);
+    }
+
+    .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 4px 0;
+    }
+
+    @media (min-width: 600px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    .stat-box {
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+    }
+
+    .stat-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.25;
+    }
+
+    .stat-value.accent {
+      color: var(--accent-gold);
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .result-actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    @media (min-width: 500px) {
+      .result-actions {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* Toast / Notice */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--accent-sky);
+      color: var(--text-primary);
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-weight: 600;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s var(--ease-out);
+      z-index: 40;
+      white-space: nowrap;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Exit Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 8, 15, 0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 380px;
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .modal-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-danger {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      background-color: var(--accent-coral);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .btn-ghost {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-surface-elevated);
+      border: 1px solid var(--border-hairline);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <div class="app-shell">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18h6"></path>
+            <path d="M10 22h4"></path>
+            <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"></path>
+          </svg>
+        </div>
+        <h1 class="brand-title">জ্ঞানের আসর</h1>
+      </div>
+
+      <div class="topbar-actions">
+        <div class="best-score-inline tabular" title="আপনার সর্বোচ্চ স্কোর">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+            <path d="M4 22h16"></path>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+          </svg>
+          <span>সর্বোচ্চ: <span id="topbar-best-score">০</span></span>
+        </div>
+
+        <button id="mute-btn" class="icon-btn" type="button" aria-label="শব্দ চালু বা বন্ধ করুন" title="শব্দ চালু/বন্ধ">
+          <svg id="sound-on-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <svg id="sound-off-icon" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Screen 1: Home Screen -->
+    <main id="screen-home" class="screen active">
+      <div class="hero-block">
+        <h2 class="hero-title">বাংলা সাধারণ জ্ঞানের <span>চূড়ান্ত আসর</span></h2>
+        <p class="hero-subtitle">প্রতি প্রশ্নে ১৫ সেকেন্ড সময়। দ্রুত সঠিক উত্তর দিয়ে বোনাস পয়েন্ট ও ধারাবাহিক কম্বো অর্জন করুন।</p>
+      </div>
+
+      <!-- Mode Selection -->
+      <section class="section-block" aria-label="খেলার মোড নির্বাচন">
+        <div class="section-label">
+          <span>১. খেলার মোড বেছে নিন</span>
+        </div>
+        <div class="mode-grid">
+          <button type="button" class="select-card selected" data-mode="classic" aria-pressed="true">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+            <div class="card-body">
+              <div class="card-title">
+                <span>ক্লাসিক মোড</span>
+                <svg class="selected-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <p class="card-desc">১০টি প্রশ্ন · সঠিক উত্তরে দ্রুতগতির বোনাস ও ধারা স্কোর</p>
+            </div>
+          </button>
+
+          <button type="button" class="select-card" data-mode="survival" aria-pressed="false">
+            <div class="card-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+              </svg>
+            </div>
+            <div class="card-body">
+              <div class="card-title">
+                <span>সারভাইভাল মোড</span>
+                <svg class="selected-check" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <p class="card-desc">৩টি লাইফ ❤️❤️❤️ · ৩টি ভুল করলে গেম শেষ</p>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Category Selection -->
+      <section class="section-block" aria-label="বিষয় নির্বাচন">
+        <div class="section-label">
+          <span>২. বিষয় নির্বাচন করুন</span>
+          <span id="total-bank-label" class="tabular">মোট ৬০টি প্রশ্ন</span>
+        </div>
+        <div class="category-grid">
+          <button type="button" class="cat-btn cat-wide selected" data-category="all" aria-pressed="true">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
+            <div class="cat-info">
+              <div class="cat-name">সব মিশ্রিত</div>
+              <div class="cat-count tabular" data-cat-count="all">সব বিষয় থেকে ৬০টি প্রশ্ন</div>
+            </div>
+          </button>
+
+          <button type="button" class="cat-btn" data-category="bangladesh" aria-pressed="false">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                <line x1="4" y1="22" x2="4" y2="15"></line>
+              </svg>
+            </div>
+            <div class="cat-info">
+              <div class="cat-name">বাংলাদেশ বিষয়াবলি</div>
+              <div class="cat-count tabular" data-cat-count="bangladesh">১৫টি প্রশ্ন</div>
+            </div>
+          </button>
+
+          <button type="button" class="cat-btn" data-category="world" aria-pressed="false">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <div class="cat-info">
+              <div class="cat-name">আন্তর্জাতিক</div>
+              <div class="cat-count tabular" data-cat-count="world">১৫টি প্রশ্ন</div>
+            </div>
+          </button>
+
+          <button type="button" class="cat-btn" data-category="science" aria-pressed="false">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3h6"></path>
+                <path d="M10 3v5.4a2 2 0 0 1-.4 1.2L5.2 15.5A3 3 0 0 0 7.6 20h8.8a3 3 0 0 0 2.4-4.5l-4.4-5.9a2 2 0 0 1-.4-1.2V3"></path>
+              </svg>
+            </div>
+            <div class="cat-info">
+              <div class="cat-name">বিজ্ঞান ও প্রযুক্তি</div>
+              <div class="cat-count tabular" data-cat-count="science">১৫টি প্রশ্ন</div>
+            </div>
+          </button>
+
+          <button type="button" class="cat-btn" data-category="sports" aria-pressed="false">
+            <div class="cat-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="m6.7 6.7 10.6 10.6"></path>
+                <path d="m17.3 6.7-10.6 10.6"></path>
+              </svg>
+            </div>
+            <div class="cat-info">
+              <div class="cat-name">খেলাধুলা</div>
+              <div class="cat-count tabular" data-cat-count="sports">১৫টি প্রশ্ন</div>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <div class="start-wrap">
+        <button id="start-game-btn" type="button" class="btn-primary">
+          <span>খেলা শুরু করুন</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </button>
+      </div>
+
+      <footer class="home-stats-strip tabular">
+        <span>ক্লাসিক সেরা: <strong id="home-classic-best">০</strong></span>
+        <span aria-hidden="true">·</span>
+        <span>সারভাইভাল সেরা: <strong id="home-survival-best">০</strong></span>
+        <span aria-hidden="true">·</span>
+        <span>৩টি লাইফলাইন: ৫০:৫০, +১০ সেকেন্ড, প্রশ্ন পরিবর্তন</span>
+      </footer>
+    </main>
+
+    <!-- Screen 2: Active Quiz Screen -->
+    <section id="screen-quiz" class="screen" aria-label="কুইজ খেলার পর্দা">
+      <div class="quiz-hud">
+        <div class="hud-left">
+          <button id="quit-game-btn" type="button" class="quit-btn" aria-label="হোম স্ক্রিনে ফিরে যান">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span>হোম</span>
+          </button>
+          <div class="hud-meta tabular">
+            <strong id="hud-q-progress">প্রশ্ন ১/১০</strong>
+            <span aria-hidden="true">·</span>
+            <span id="hud-category-name">সব মিশ্রিত</span>
+          </div>
+        </div>
+
+        <div class="hud-right tabular">
+          <div id="hud-lives" class="lives-display" style="display:none" aria-label="অবশিষ্ট লাইফ"></div>
+          <div id="hud-streak" class="streak-display" style="display:none">
+            <span aria-hidden="true">🔥</span>
+            <span id="hud-streak-text">ধারা ০</span>
+          </div>
+          <div class="score-display">স্কোর: <span id="hud-score">০</span></div>
+        </div>
+      </div>
+
+      <!-- 15-second Countdown Bar -->
+      <div class="timer-row" aria-label="অবশিষ্ট সময়">
+        <div class="timer-track">
+          <div id="timer-fill" class="timer-fill"></div>
+        </div>
+        <div id="timer-label" class="timer-label tabular">১৫ সে.</div>
+      </div>
+
+      <!-- Question Card -->
+      <article id="question-card" class="question-card">
+        <h2 id="question-text" class="question-text">প্রশ্ন লোড হচ্ছে...</h2>
+
+        <div id="options-grid" class="options-grid" role="group" aria-label="উত্তরের বিকল্পসমূহ"></div>
+
+        <div id="feedback-panel" class="feedback-panel" aria-live="polite">
+          <div class="feedback-top">
+            <div id="feedback-heading" class="feedback-heading"></div>
+            <div id="points-breakdown" class="points-breakdown tabular"></div>
+          </div>
+          <p id="explanation-text" class="explanation-text"></p>
+          <button id="next-question-btn" type="button" class="next-btn">
+            <span id="next-btn-label">পরবর্তী প্রশ্ন</span>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </article>
+
+      <!-- 3 Lifelines -->
+      <div class="lifelines-bar" role="group" aria-label="লাইফলাইন">
+        <button id="ll-fifty" type="button" class="lifeline-btn">
+          <svg class="lifeline-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="2" x2="12" y2="22"></line>
+          </svg>
+          <span class="lifeline-label">৫০:৫০</span>
+        </button>
+
+        <button id="ll-time" type="button" class="lifeline-btn">
+          <svg class="lifeline-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span class="lifeline-label">+১০ সেকেন্ড</span>
+        </button>
+
+        <button id="ll-skip" type="button" class="lifeline-btn">
+          <svg class="lifeline-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span class="lifeline-label">প্রশ্ন পরিবর্তন</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Screen 3: Result Screen -->
+    <section id="screen-result" class="screen" aria-label="খেলার ফলাফল">
+      <div class="result-card">
+        <div class="result-emblem" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+            <path d="M4 22h16"></path>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+          </svg>
+        </div>
+
+        <div id="new-record-banner" class="new-record-banner">
+          <span aria-hidden="true">🏆</span>
+          <span>অভিনন্দন! নতুন সর্বোচ্চ স্কোর!</span>
+        </div>
+
+        <h2 id="result-title" class="result-title">দারুণ খেলেছেন!</h2>
+        <p id="result-subtitle" class="result-subtitle"></p>
+
+        <div class="stats-grid tabular">
+          <div class="stat-box">
+            <div id="res-score" class="stat-value accent">০</div>
+            <div class="stat-label">মোট স্কোর</div>
+          </div>
+          <div class="stat-box">
+            <div id="res-correct" class="stat-value">০/০</div>
+            <div class="stat-label">সঠিক উত্তর</div>
+          </div>
+          <div class="stat-box">
+            <div id="res-streak" class="stat-value">০</div>
+            <div class="stat-label">সর্বোচ্চ ধারা</div>
+          </div>
+          <div class="stat-box">
+            <div id="res-bonus" class="stat-value">০</div>
+            <div class="stat-label">গতি ও কম্বো বোনাস</div>
+          </div>
+        </div>
+
+        <div class="result-actions">
+          <button id="play-again-btn" type="button" class="btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+            </svg>
+            <span>আবার খেলুন</span>
+          </button>
+          <button id="back-home-btn" type="button" class="btn-secondary">
+            <span>হোম স্ক্রিন</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Quit Confirmation Modal -->
+  <div id="quit-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="quit-modal-title">
+    <div class="modal-box">
+      <h3 id="quit-modal-title" class="modal-title">খেলা ছেড়ে বের হবেন?</h3>
+      <p class="modal-desc">এখন বের হলে এই রাউন্ডের বর্তমান স্কোর সংরক্ষণ করা হবে না।</p>
+      <div class="modal-actions">
+        <button id="cancel-quit-btn" type="button" class="btn-ghost">খেলা চালিয়ে যান</button>
+        <button id="confirm-quit-btn" type="button" class="btn-danger">হোমে ফিরুন</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ---------------- Bengali Numerals & Labels ---------------- */
+      const BN_DIGITS = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      const OPTION_KEYS = ['ক', 'খ', 'গ', 'ঘ'];
+
+      function toBn(num) {
+        return String(num).replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
+      }
+
+      const CATEGORY_META = {
+        all: { name: 'সব মিশ্রিত' },
+        bangladesh: { name: 'বাংলাদেশ বিষয়াবলি' },
+        world: { name: 'আন্তর্জাতিক' },
+        science: { name: 'বিজ্ঞান ও প্রযুক্তি' },
+        sports: { name: 'খেলাধুলা' }
+      };
+
+      /* ---------------- Verified 60 Bengali GK Questions (15 per category) ---------------- */
+      const QUESTION_BANK = [
+        // 1. বাংলাদেশ বিষয়াবলি (15)
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের জাতীয় স্মৃতিসৌধের স্থপতি কে?',
+          options: ['সৈয়দ মাইনুল হোসেন', 'মাজহারুল ইসলাম', 'হামিদুর রহমান', 'নভেরা আহমেদ'],
+          answer: 0,
+          explanation: 'সাভারে অবস্থিত জাতীয় স্মৃতিসৌধের নকশা প্রণয়ন করেন স্থপতি সৈয়দ মাইনুল হোসেন।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের পদ্মা ও যমুনা নদী কোন স্থানে মিলিত হয়েছে?',
+          options: ['গোয়ালন্দ', 'চাঁদপুর', 'ভৈরব', 'সিরাজগঞ্জ'],
+          answer: 0,
+          explanation: 'রাজবাড়ী জেলার গোয়ালন্দে পদ্মা ও যমুনা নদী মিলিত হয়ে পদ্মা নামে প্রবাহিত হয়েছে।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের প্রথম অস্থায়ী সরকার (মুজিবনগর সরকার) কবে শপথ গ্রহণ করে?',
+          options: ['১৭ এপ্রিল ১৯৭১', '১০ এপ্রিল ১৯৭১', '২৬ মার্চ ১৯৭১', '১৬ ডিসেম্বর ১৯৭১'],
+          answer: 0,
+          explanation: '১৯৭১ সালের ১৭ এপ্রিল মেহেরপুরের বৈদ্যনাথতলায় অস্থায়ী সরকার শপথ গ্রহণ করে।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের জাতীয় সংগীত ‘আমার সোনার বাংলা’-এর রচয়িতা ও সুরকার কে?',
+          options: ['রবীন্দ্রনাথ ঠাকুর', 'কাজী নজরুল ইসলাম', 'দ্বিজেন্দ্রলাল রায়', 'অতুলপ্রসাদ সেন'],
+          answer: 0,
+          explanation: 'রবীন্দ্রনাথ ঠাকুর ১৯০৫ সালে গানটি রচনা করেন এবং বাউল সুরের আদলে এর সুরারোপ করেন।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বিশ্ব ঐতিহ্য সুন্দরবনের প্রায় কত শতাংশ ভূমি বাংলাদেশে অবস্থিত?',
+          options: ['প্রায় ৬০ শতাংশ', 'প্রায় ৪০ শতাংশ', 'প্রায় ৭৫ শতাংশ', 'প্রায় ৫০ শতাংশ'],
+          answer: 0,
+          explanation: 'সুন্দরবনের মোট আয়তনের প্রায় ৬০ শতাংশ অংশ বাংলাদেশের দক্ষিণ-পশ্চিমাঞ্চলে অবস্থিত।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের সংবিধান কবে থেকে কার্যকর হয়?',
+          options: ['১৬ ডিসেম্বর ১৯৭২', '৪ নভেম্বর ১৯৭২', '২৬ মার্চ ১৯৭২', '১০ জানুয়ারি ১৯৭২'],
+          answer: 0,
+          explanation: '১৯৭২ সালের ৪ নভেম্বর সংবিধান গৃহীত হয় এবং ১৬ ডিসেম্বর বিজয় দিবসে তা কার্যকর হয়।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের একমাত্র প্রবাল দ্বীপ কোনটি?',
+          options: ['সেন্ট মার্টিন', 'ভোলা', 'হাতিয়া', 'মহেশখালী'],
+          answer: 0,
+          explanation: 'বঙ্গোপসাগরের উত্তর-পূর্বাংশে অবস্থিত সেন্ট মার্টিন (নারিকেল জিঞ্জিরা) দেশের একমাত্র প্রবাল দ্বীপ।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'ঢাকার কেন্দ্রীয় শহীদ মিনারের মূল নকশাকার কে?',
+          options: ['হামিদুর রহমান', 'জয়নুল আবেদিন', 'কামরুল হাসান', 'এস এম সুলতান'],
+          answer: 0,
+          explanation: 'চিত্রশিল্পী ও ভাস্কর হামিদুর রহমান কেন্দ্রীয় শহীদ মিনারের মূল নকশা প্রণয়ন করেন।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের প্রথম কৃত্রিম উপগ্রহ ‘বঙ্গবন্ধু স্যাটেলাইট-১’ কবে উৎক্ষেপণ করা হয়?',
+          options: ['১২ মে ২০১৮', '১৬ ডিসেম্বর ২০১৭', '২৬ মার্চ ২০১৯', '১৫ আগস্ট ২০১৮'],
+          answer: 0,
+          explanation: 'বাংলাদেশ সময় ২০১৮ সালের ১২ মে যুক্তরাষ্ট্রের ফ্লোরিডা থেকে স্যাটেলাইটটি উৎক্ষেপণ করা হয়।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের কোন জেলা ‘চায়ের রাজধানী’ হিসেবে পরিচিত?',
+          options: ['মৌলভীবাজার', 'সিলেট', 'চট্টগ্রাম', 'পঞ্চগড়'],
+          answer: 0,
+          explanation: 'মৌলভীবাজার জেলার শ্রীমঙ্গলে দেশের সবচেয়ে বেশি চা বাগান থাকায় একে চায়ের রাজধানী বলা হয়।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'মহান মুক্তিযুদ্ধে অসীম বীরত্বের জন্য কতজনকে ‘বীরশ্রেষ্ঠ’ খেতাবে ভূষিত করা হয়?',
+          options: ['৭ জন', '৬ জন', '৮ জন', '১০ জন'],
+          answer: 0,
+          explanation: '১৯৭১ সালের মহান মুক্তিযুদ্ধে সর্বোচ্চ সামরিক সম্মান ‘বীরশ্রেষ্ঠ’ পান ৭ জন শহিদ মুক্তিযোদ্ধা।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের জাতীয় সংসদ ভবনের স্থপতি কে?',
+          options: ['লুই আই কান', 'ফজলুর রহমান খান', 'রবার্ট বয়েল', 'চার্লস কোরিয়া'],
+          answer: 0,
+          explanation: 'বিশ্বখ্যাত মার্কিন স্থপতি লুই আই কান ঢাকার শেরেবাংলা নগরে জাতীয় সংসদ ভবনের নকশা করেন।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'পদ্মা বহুমুখী সেতুর মূল দৈর্ঘ্য কত কিলোমিটার?',
+          options: ['৬.১৫ কিলোমিটার', '৫.৫০ কিলোমিটার', '৬.৭৫ কিলোমিটার', '৪.৮০ কিলোমিটার'],
+          answer: 0,
+          explanation: 'নিজস্ব অর্থায়নে নির্মিত পদ্মা বহুমুখী সেতুর মূল দৈর্ঘ্য ৬.১৫ কিলোমিটার।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'বাংলাদেশের কোন বিভাগে জেলার সংখ্যা সবচেয়ে বেশি?',
+          options: ['ঢাকা', 'চট্টগ্রাম', 'রাজশাহী', 'খুলনা'],
+          answer: 0,
+          explanation: 'ঢাকা বিভাগে মোট ১৩টি জেলা রয়েছে, যা দেশের সব বিভাগের মধ্যে সর্বাধিক।'
+        },
+        {
+          category: 'bangladesh',
+          q: 'পহেলা বৈশাখের ‘মঙ্গল শোভাযাত্রা’ কবে ইউনেস্কোর বিশ্ব ঐতিহ্যের স্বীকৃতি লাভ করে?',
+          options: ['২০১৬ সালে', '২০১৪ সালে', '২০১৮ সালে', '২০১২ সালে'],
+          answer: 0,
+          explanation: '২০১৬ সালের ৩০ নভেম্বর ইউনেস্কো মঙ্গল শোভাযাত্রাকে মানবতার অধরা সাংস্কৃতিক ঐতিহ্য হিসেবে স্বীকৃতি দেয়।'
+        },
+
+        // 2. আন্তর্জাতিক (15)
+        {
+          category: 'world',
+          q: 'পৃথিবীর বৃহত্তম ও গভীরতম মহাসাগর কোনটি?',
+          options: ['প্রশান্ত মহাসাগর', 'আটলান্টিক মহাসাগর', 'ভারত মহাসাগর', 'উত্তর মহাসাগর'],
+          answer: 0,
+          explanation: 'প্রশান্ত মহাসাগর পৃথিবীর মোট জলভাগের প্রায় অর্ধেক অংশ জুড়ে বিস্তৃত বৃহত্তম মহাসাগর।'
+        },
+        {
+          category: 'world',
+          q: 'জাতিসংঘের প্রধান সদর দপ্তর কোথায় অবস্থিত?',
+          options: ['নিউইয়র্ক', 'জেনেভা', 'প্যারিস', 'ভিয়েনা'],
+          answer: 0,
+          explanation: '১৯৪৫ সালে প্রতিষ্ঠিত জাতিসংঘের প্রধান সদর দপ্তর যুক্তরাষ্ট্রের নিউইয়র্ক শহরে অবস্থিত।'
+        },
+        {
+          category: 'world',
+          q: 'আয়তনের দিক থেকে বিশ্বের ক্ষুদ্রতম স্বাধীন রাষ্ট্র কোনটি?',
+          options: ['ভ্যাটিকান সিটি', 'মোনাকো', 'সান মারিনো', 'মালদ্বীপ'],
+          answer: 0,
+          explanation: 'মাত্র প্রায় ০.৪৯ বর্গকিলোমিটার আয়তনের ভ্যাটিকান সিটি পৃথিবীর ক্ষুদ্রতম দেশ।'
+        },
+        {
+          category: 'world',
+          q: 'পৃথিবীর গভীরতম মিঠাপানির হ্রদ কোনটি?',
+          options: ['বৈকাল হ্রদ', 'কাস্পিয়ান সাগর', 'সুপিরিয়র হ্রদ', 'ভিক্টোরিয়া হ্রদ'],
+          answer: 0,
+          explanation: 'রাশিয়ার সাইবেরিয়ায় অবস্থিত বৈকাল হ্রদ (গভীরতা প্রায় ১,৬৪২ মিটার) পৃথিবীর গভীরতম হ্রদ।'
+        },
+        {
+          category: 'world',
+          q: 'কোন দেশকে ‘উদীয়মান সূর্যের দেশ’ বলা হয়?',
+          options: ['জাপান', 'নরওয়ে', 'দক্ষিণ কোরিয়া', 'নিউজিল্যান্ড'],
+          answer: 0,
+          explanation: 'পূর্ব প্রান্তে অবস্থিত হওয়ায় ঐতিহাসিকভাবে জাপানকে ‘উদীয়মান সূর্যের দেশ’ বলা হয়।'
+        },
+        {
+          category: 'world',
+          q: 'ইউনেস্কো (UNESCO)-এর সদর দপ্তর কোন শহরে অবস্থিত?',
+          options: ['প্যারিস', 'রোম', 'লন্ডন', 'বার্লিন'],
+          answer: 0,
+          explanation: 'জাতিসংঘের শিক্ষা, বিজ্ঞান ও সংস্কৃতি বিষয়ক সংস্থা ইউনেস্কোর সদর দপ্তর ফ্রান্সের প্যারিসে।'
+        },
+        {
+          category: 'world',
+          q: 'ইনকা সভ্যতার বিখ্যাত নিদর্শন ‘মাচু পিচু’ কোন দেশে অবস্থিত?',
+          options: ['পেরু', 'মেক্সিকো', 'ব্রাজিল', 'চিলি'],
+          answer: 0,
+          explanation: 'পনেরো শতকের ইনকা নিদর্শন মাচু পিচু দক্ষিণ আমেরিকার পেরুর আন্দিজ পর্বতে অবস্থিত।'
+        },
+        {
+          category: 'world',
+          q: 'আফ্রিকা মহাদেশের সর্বোচ্চ পর্বতশৃঙ্গ কোনটি?',
+          options: ['মাউন্ট কিলিমানজারো', 'মাউন্ট কেনিয়া', 'অ্যাটলাস পর্বত', 'মাউন্ট এলগন'],
+          answer: 0,
+          explanation: 'তানজানিয়ায় অবস্থিত মাউন্ট কিলিমানজারো (৫,৮৯৫ মিটার) আফ্রিকার সর্বোচ্চ শৃঙ্গ।'
+        },
+        {
+          category: 'world',
+          q: 'প্রতি বছর কোন তারিখে আন্তর্জাতিক মাতৃভাষা দিবস পালিত হয়?',
+          options: ['২১ ফেব্রুয়ারি', '১৬ ডিসেম্বর', '৮ মার্চ', '২৬ মার্চ'],
+          answer: 0,
+          explanation: '১৯৯৯ সালে ইউনেস্কোর ঘোষণার পর ২০০০ সাল থেকে ২১ ফেব্রুয়ারি বিশ্বব্যাপী পালিত হচ্ছে।'
+        },
+        {
+          category: 'world',
+          q: 'পৃথিবীর দীর্ঘতম পর্বতমালা কোনটি?',
+          options: ['আন্দিজ পর্বতমালা', 'হিমালয় পর্বতমালা', 'রকি পর্বতমালা', 'আল্পস পর্বতমালা'],
+          answer: 0,
+          explanation: 'দক্ষিণ আমেরিকার পশ্চিমাংশ জুড়ে প্রায় ৭,০০০ কিলোমিটার বিস্তৃত আন্দিজ বিশ্বের দীর্ঘতম পর্বতমালা।'
+        },
+        {
+          category: 'world',
+          q: 'নীল নদ কোন সাগরে গিয়ে পতিত হয়েছে?',
+          options: ['ভূমধ্যসাগর', 'লোহিত সাগর', 'আরব সাগর', 'কৃষ্ণ সাগর'],
+          answer: 0,
+          explanation: 'আফ্রিকার দীর্ঘতম নদী নীল নদ মিশরের ব-দ্বীপ অতিক্রম করে ভূমধ্যসাগরে পতিত হয়েছে।'
+        },
+        {
+          category: 'world',
+          q: 'কোন প্রণালী এশিয়া মহাদেশকে উত্তর আমেরিকা থেকে পৃথক করেছে?',
+          options: ['বেরিং প্রণালী', 'জিব্রাল্টার প্রণালী', 'মালাক্কা প্রণালী', 'হরমুজ প্রণালী'],
+          answer: 0,
+          explanation: 'রাশিয়া ও আলাস্কার মধ্যবর্তী বেরিং প্রণালী এশিয়া ও উত্তর আমেরিকা মহাদেশকে আলাদা করেছে।'
+        },
+        {
+          category: 'world',
+          q: 'নোবেল পুরস্কার প্রথম প্রদান শুরু হয় কত সালে?',
+          options: ['১৯০১ সালে', '১৮৯৫ সালে', '১৯০৫ সালে', '১৯১১ সালে'],
+          answer: 0,
+          explanation: 'বিজ্ঞানী আলফ্রেড নোবেলের উইল অনুযায়ী ১৯০১ সাল থেকে নোবেল পুরস্কার প্রদান শুরু হয়।'
+        },
+        {
+          category: 'world',
+          q: 'নিচের কোন দেশটি ইউরোপ ও এশিয়া উভয় মহাদেশেই বিস্তৃত?',
+          options: ['তুরস্ক', 'ইতালি', 'মিশর', 'ইরান'],
+          answer: 0,
+          explanation: 'বসফরাস প্রণালীর দুই তীরে অবস্থিত তুরস্কের কিছু অংশ ইউরোপে ও মূল অংশ এশিয়ায় পড়েছে।'
+        },
+        {
+          category: 'world',
+          q: 'পৃথিবীর বৃহত্তম উষ্ণ মরুভূমি কোনটি?',
+          options: ['সাহারা মরুভূমি', 'গোবি মরুভূমি', 'কালাহারি মরুভূমি', 'থর মরুভূমি'],
+          answer: 0,
+          explanation: 'উত্তর আফ্রিকার বিস্তীর্ণ এলাকা জুড়ে অবস্থিত সাহারা পৃথিবীর বৃহত্তম উষ্ণ মরুভূমি।'
+        },
+
+        // 3. বিজ্ঞান ও প্রযুক্তি (15)
+        {
+          category: 'science',
+          q: 'মানবদেহের বৃহত্তম অঙ্গ কোনটি?',
+          options: ['ত্বক', 'যকৃৎ', 'ফুসফুস', 'মস্তিষ্ক'],
+          answer: 0,
+          explanation: 'মানবদেহের সম্পূর্ণ বাহ্যিক আবরণ হিসেবে ত্বক আয়তন ও ওজনের দিক থেকে বৃহত্তম অঙ্গ।'
+        },
+        {
+          category: 'science',
+          q: 'শূন্য মাধ্যমে আলোর বেগ প্রতি সেকেন্ডে প্রায় কত?',
+          options: ['৩ লক্ষ কিলোমিটার', '১ লক্ষ ৫০ হাজার কিলোমিটার', '৩ হাজার কিলোমিটার', '৩০ লক্ষ কিলোমিটার'],
+          answer: 0,
+          explanation: 'শূন্য মাধ্যমে আলোর বেগ সেকেন্ডে প্রায় ২,৯৯,৭৯২ কিলোমিটার বা প্রায় ৩ লক্ষ কিলোমিটার।'
+        },
+        {
+          category: 'science',
+          q: 'সৌরজগতের কোন গ্রহ সূর্যের সবচেয়ে কাছে অবস্থিত?',
+          options: ['বুধ', 'শুক্র', 'পৃথিবী', 'মঙ্গল'],
+          answer: 0,
+          explanation: 'সৌরজগতের ক্ষুদ্রতম ও সূর্যের সবচেয়ে নিকটবর্তী গ্রহ হলো বুধ।'
+        },
+        {
+          category: 'science',
+          q: 'বিশুদ্ধ পানির রাসায়নিক সংকেত কোনটি?',
+          options: ['H₂O', 'CO₂', 'NaCl', 'H₂O₂'],
+          answer: 0,
+          explanation: 'দুটি হাইড্রোজেন ও একটি অক্সিজেন পরমাণুর সমন্বয়ে পানির অণু (H₂O) গঠিত।'
+        },
+        {
+          category: 'science',
+          q: 'আধুনিক কম্পিউটারের জনক হিসেবে কাকে অভিহিত করা হয়?',
+          options: ['চার্লস ব্যাবেজ', 'অ্যালান টিউরিং', 'টিম বার্নার্স-লি', 'বিল গেটস'],
+          answer: 0,
+          explanation: '‘অ্যানালিটিক্যাল ইঞ্জিন’ নকশা করার জন্য ব্রিটিশ গণিতবিদ চার্লস ব্যাবেজকে কম্পিউটারের জনক বলা হয়।'
+        },
+        {
+          category: 'science',
+          q: 'কোন রঞ্জক পদার্থের কারণে উদ্ভিদের পাতা সবুজ দেখায়?',
+          options: ['ক্লোরোফিল', 'জ্যান্থোফিল', 'ক্যারোটিন', 'হিমোগ্লোবিন'],
+          answer: 0,
+          explanation: 'ক্লোরোফিল নামক সবুজ রঞ্জক পাতাকে সবুজ রঙ দেয় এবং সালোকসংশ্লেষণে সহায়তা করে।'
+        },
+        {
+          category: 'science',
+          q: 'মানুষের রক্তের কোন গ্রুপকে ‘সর্বজনীন দাতা’ (Universal Donor) বলা হয়?',
+          options: ['O নেগেটিভ (O-)', 'AB পজিটিভ (AB+)', 'A পজিটিভ (A+)', 'B নেগেটিভ (B-)'],
+          answer: 0,
+          explanation: 'O নেগেটিভ রক্তে A, B বা Rh অ্যান্টিজেন না থাকায় জরুরি প্রয়োজনে যেকোনো গ্রুপে দেওয়া যায়।'
+        },
+        {
+          category: 'science',
+          q: 'বৈদ্যুতিক বাতির ফিলামেন্ট তৈরিতে কোন ধাতু ব্যবহৃত হয়?',
+          options: ['টাংস্টেন', 'তামা', 'অ্যালুমিনিয়াম', 'নিকেল'],
+          answer: 0,
+          explanation: 'উচ্চ গলনাঙ্ক (প্রায় ৩৪২২°C) থাকার কারণে বৈদ্যুতিক বাল্বের ফিলামেন্টে টাংস্টেন ব্যবহৃত হয়।'
+        },
+        {
+          category: 'science',
+          q: 'ওয়ার্ল্ড ওয়াইড ওয়েব (WWW)-এর উদ্ভাবক কে?',
+          options: ['টিম বার্নার্স-লি', 'ভিন্টন সার্ফ', 'ল্যারি পেজ', 'মার্ক জাকারবার্গ'],
+          answer: 0,
+          explanation: 'ব্রিটিশ বিজ্ঞানী স্যার টিম বার্নার্স-লি ১৯৮৯ সালে ওয়ার্ল্ড ওয়াইড ওয়েব উদ্ভাবন করেন।'
+        },
+        {
+          category: 'science',
+          q: 'কোন ভিটামিনের অভাবে রাতকানা রোগ হয়?',
+          options: ['ভিটামিন এ', 'ভিটামিন সি', 'ভিটামিন ডি', 'ভিটামিন বি'],
+          answer: 0,
+          explanation: 'দৃষ্টিশক্তি ও চোখের রেটিনার সুস্থতার জন্য অপরিহার্য ভিটামিন এ-এর অভাবে রাতকানা রোগ হয়।'
+        },
+        {
+          category: 'science',
+          q: 'ভূমিকম্পের তীব্রতা ও তরঙ্গ মাপার যন্ত্রের নাম কী?',
+          options: ['সিসমোগ্রাফ', 'ব্যারোমিটার', 'অ্যানিমোমিটার', 'হাইগ্রোমিটার'],
+          answer: 0,
+          explanation: 'ভূকম্পন তরঙ্গ পরিমাপ ও লিপিবদ্ধ করার যন্ত্রটির নাম সিসমোগ্রাফ।'
+        },
+        {
+          category: 'science',
+          q: 'আধুনিক পর্যায় সারণিতে মোট কতটি মৌল রয়েছে?',
+          options: ['১১৮টি', '১০৮টি', '১১২টি', '১২০টি'],
+          answer: 0,
+          explanation: 'আন্তর্জাতিকভাবে স্বীকৃত আধুনিক পর্যায় সারণিতে মোট ১১৮টি মৌলিক পদার্থ রয়েছে।'
+        },
+        {
+          category: 'science',
+          q: 'বায়ুমণ্ডলে কোন গ্যাসের পরিমাণ সবচেয়ে বেশি?',
+          options: ['নাইট্রোজেন', 'অক্সিজেন', 'আর্গন', 'কার্বন ডাই-অক্সাইড'],
+          answer: 0,
+          explanation: 'পৃথিবীর বায়ুমণ্ডলের প্রায় ৭৮ শতাংশ নাইট্রোজেন এবং প্রায় ২১ শতাংশ অক্সিজেন গ্যাস।'
+        },
+        {
+          category: 'science',
+          q: 'বাইনারি পদ্ধতিতে ১ কিলোবাইট (KB) সমান কত বাইট?',
+          options: ['১০২৪ বাইট', '১০০০ বাইট', '৫১২ বাইট', '২০৪৮ বাইট'],
+          answer: 0,
+          explanation: 'কম্পিউটারের বাইনারি গণনা অনুযায়ী ২-এর ঘাত হিসেবে ১ কিলোবাইট সমান ১০২৪ বাইট।'
+        },
+        {
+          category: 'science',
+          q: 'সূর্য থেকে পৃথিবীতে আলো পৌঁছাতে প্রায় কত সময় লাগে?',
+          options: ['প্রায় ৮ মিনিট ২০ সেকেন্ড', 'প্রায় ৪ মিনিট', 'প্রায় ১২ মিনিট', 'প্রায় ১৫ মিনিট'],
+          answer: 0,
+          explanation: 'সূর্য থেকে প্রায় ১৫ কোটি কিমি পথ পাড়ি দিয়ে পৃথিবীতে আলো পৌঁছাতে প্রায় ৮ মিনিট ২০ সেকেন্ড লাগে।'
+        },
+
+        // 4. খেলাধুলা (15)
+        {
+          category: 'sports',
+          q: 'আধুনিক অলিম্পিক গেমস কবে ও কোথায় শুরু হয়?',
+          options: ['১৮৯৬ সালে এথেন্সে', '১৯০০ সালে প্যারিসে', '১৮৯২ সালে লন্ডনে', '১৯০৪ সালে সেন্ট লুইসে'],
+          answer: 0,
+          explanation: 'গ্রিসের এথেন্সে ১৮৯৬ সালে প্রথম আধুনিক গ্রীষ্মকালীন অলিম্পিক গেমস অনুষ্ঠিত হয়।'
+        },
+        {
+          category: 'sports',
+          q: 'বাংলাদেশ জাতীয় ক্রিকেট দল কবে টেস্ট মর্যাদা লাভ করে?',
+          options: ['২০০০ সালে', '১৯৯৭ সালে', '১৯৯৯ সালে', '২০০১ সালে'],
+          answer: 0,
+          explanation: '২০০০ সালের ২৬ জুন আন্তর্জাতিক ক্রিকেট কাউন্সিল (আইসিসি) বাংলাদেশকে টেস্ট মর্যাদা দেয়।'
+        },
+        {
+          category: 'sports',
+          q: 'ফুটবল বিশ্বকাপের ইতিহাসে সবচেয়ে বেশিবার চ্যাম্পিয়ন হয়েছে কোন দেশ?',
+          options: ['ব্রাজিল', 'জার্মানি', 'ইতালি', 'আর্জেন্টিনা'],
+          answer: 0,
+          explanation: 'ব্রাজিল সর্বোচ্চ ৫ বার (১৯৫৮, ১৯৬২, ১৯৭০, ১৯৯৪ ও ২০০২) ফিফা ফুটবল বিশ্বকাপ জিতেছে।'
+        },
+        {
+          category: 'sports',
+          q: 'বাংলাদেশের হয়ে টেস্ট ক্রিকেটে প্রথম ডাবল সেঞ্চুরি করেন কে?',
+          options: ['মুশফিকুর রহিম', 'তামিম ইকবাল', 'সাকিব আল হাসান', 'মুমিনুল হক'],
+          answer: 0,
+          explanation: '২০১৩ সালে গল টেস্টে শ্রীলঙ্কার বিপক্ষে মুশফিকুর রহিম বাংলাদেশের প্রথম ডাবল সেঞ্চুরি করেন।'
+        },
+        {
+          category: 'sports',
+          q: 'দাবা খেলায় প্রতিটি পক্ষের মোট কতটি ঘুঁটি (Piece) থাকে?',
+          options: ['১৬টি', '১৪টি', '১৮টি', '১২টি'],
+          answer: 0,
+          explanation: 'দাবা বোর্ডে প্রতিটি পক্ষের রাজা, মন্ত্রী, নৌকা, গজ, ঘোড়া ও সৈন্য মিলিয়ে মোট ১৬টি ঘুঁটি থাকে।'
+        },
+        {
+          category: 'sports',
+          q: 'বাংলাদেশ নারী ফুটবল দল কোন সালে প্রথম সাফ চ্যাম্পিয়নশিপ শিরোপা জেতে?',
+          options: ['২০২২ সালে', '২০১৮ সালে', '২০২১ সালে', '২০১৯ সালে'],
+          answer: 0,
+          explanation: '২০২২ সালে নেপালকে ৩-১ গোলে হারিয়ে বাংলাদেশ প্রথমবারের মতো সাফ নারী চ্যাম্পিয়নশিপ জেতে।'
+        },
+        {
+          category: 'sports',
+          q: 'পুরুষদের ওয়ানডে (ODI) ক্রিকেটে প্রথম ডাবল সেঞ্চুরি করেন কে?',
+          options: ['শচীন টেন্ডুলকার', 'রোহিত শর্মা', 'বীরেন্দ্র শেবাগ', 'ক্রিস গেইল'],
+          answer: 0,
+          explanation: '২০১০ সালে দক্ষিণ আফ্রিকার বিপক্ষে অপরাজিত ২০০ রান করে শচীন টেন্ডুলকার এই মাইলফলক স্পর্শ করেন।'
+        },
+        {
+          category: 'sports',
+          q: 'বাস্কেটবল খেলায় প্রতি দলে একসাথে কতজন খেলোয়াড় কোর্টে খেলে?',
+          options: ['৫ জন', '৬ জন', '৭ জন', '১১ জন'],
+          answer: 0,
+          explanation: 'বাস্কেটবলের নিয়ম অনুযায়ী একই সময়ে একটি দলের ৫ জন খেলোয়াড় কোর্টে খেলেন।'
+        },
+        {
+          category: 'sports',
+          q: 'বাংলাদেশ কত সালে আইসিসি ট্রফি জিতে বিশ্বকাপ খেলার যোগ্যতা অর্জন করে?',
+          options: ['১৯৯৭ সালে', '১৯৯৬ সালে', '১৯৯৮ সালে', '১৯৯৯ সালে'],
+          answer: 0,
+          explanation: '১৯৯৭ সালে মালয়েশিয়ায় অনুষ্ঠিত আইসিসি ট্রফির ফাইনালে কেনিয়াকে হারিয়ে বাংলাদেশ চ্যাম্পিয়ন হয়।'
+        },
+        {
+          category: 'sports',
+          q: 'অলিম্পিক পতাকায় পরস্পর সংযুক্ত কয়টি বৃত্ত (রিং) থাকে?',
+          options: ['৫টি', '৪টি', '৬টি', '৭টি'],
+          answer: 0,
+          explanation: 'অলিম্পিক পতাকার সাদা জমিতে ৫টি রঙিন বৃত্ত বিশ্বের বিভিন্ন অঞ্চলের ক্রীড়া ঐক্যের প্রতীক।'
+        },
+        {
+          category: 'sports',
+          q: 'ক্রিকেটে এলবিডব্লিউ (LBW)-এর পূর্ণরূপ কী?',
+          options: ['Leg Before Wicket', 'Leg Behind Wicket', 'Line Before Wicket', 'Left By Wicket'],
+          answer: 0,
+          explanation: 'LBW এর পূর্ণরূপ Leg Before Wicket, যা ব্যাটারের পা উইকেটের সামনে বল আটকে দিলে দেওয়া হয়।'
+        },
+        {
+          category: 'sports',
+          q: 'চারটি গ্র্যান্ড স্ল্যাম টেনিস আসরের মধ্যে কোনটি ঘাসের কোর্টে খেলা হয়?',
+          options: ['উইম্বলডন', 'ফ্রেঞ্চ ওপেন', 'ইউএস ওপেন', 'অস্ট্রেলিয়ান ওপেন'],
+          answer: 0,
+          explanation: 'লন্ডনে অনুষ্ঠিত প্রাচীনতম গ্র্যান্ড স্ল্যাম টুর্নামেন্ট উইম্বলডন ঘাসের (গ্রাস) কোর্টে খেলা হয়।'
+        },
+        {
+          category: 'sports',
+          q: 'বাংলাদেশের জাতীয় খেলা কোনটি?',
+          options: ['কাবাডি (হাডুডু)', 'ক্রিকেট', 'ফুটবল', 'ব্যাডমিন্টন'],
+          answer: 0,
+          explanation: 'বাংলার ঐতিহ্যবাহী লোকজ খেলা কাবাডি বা হাডুডু বাংলাদেশের জাতীয় খেলা হিসেবে স্বীকৃত।'
+        },
+        {
+          category: 'sports',
+          q: 'ক্রিকেটে সাধারণত একটি ওভারে বৈধ বলের সংখ্যা কতটি?',
+          options: ['৬টি', '৫টি', '৮টি', '৪টি'],
+          answer: 0,
+          explanation: 'আধুনিক ক্রিকেটের নিয়ম অনুযায়ী প্রতি ওভারে ৬টি বৈধ ডেলিভারি করতে হয়।'
+        },
+        {
+          category: 'sports',
+          q: 'ব্যাডমিন্টন খেলার একটি আদর্শ পালকের শাটলককে সাধারণত কয়টি পালক থাকে?',
+          options: ['১৬টি', '১২টি', '১৮টি', '১৪টি'],
+          answer: 0,
+          explanation: 'আন্তর্জাতিক ব্যাডমিন্টনের মানদণ্ড অনুযায়ী একটি পালকের শাটলককে ঠিক ১৬টি পালক থাকে।'
+        }
+      ];
+
+      /* ---------------- Web Audio API Sound Engine ---------------- */
+      const SoundFX = (() => {
+        let ctx = null;
+        let muted = false;
+
+        try {
+          muted = localStorage.getItem('gyaner_asor_muted') === '1';
+        } catch (e) {
+          muted = false;
+        }
+
+        function ensureCtx() {
+          if (muted) return null;
+          try {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return null;
+            if (!ctx) ctx = new AudioCtx();
+            if (ctx.state === 'suspended') {
+              ctx.resume().catch(() => {});
+            }
+            return ctx;
+          } catch (e) {
+            return null;
+          }
+        }
+
+        function tone(freq, duration, type, volume, delay, endFreq) {
+          const ac = ensureCtx();
+          if (!ac) return;
+          try {
+            const start = ac.currentTime + (delay || 0);
+            const osc = ac.createOscillator();
+            const gain = ac.createGain();
+            osc.type = type || 'sine';
+            osc.frequency.setValueAtTime(freq, start);
+            if (endFreq) {
+              osc.frequency.exponentialRampToValueAtTime(endFreq, start + duration);
+            }
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.linearRampToValueAtTime(volume || 0.12, start + 0.012);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            osc.connect(gain);
+            gain.connect(ac.destination);
+            osc.start(start);
+            osc.stop(start + duration + 0.02);
+          } catch (e) {
+            // Ignore audio errors cleanly
+          }
+        }
+
+        return {
+          isMuted: () => muted,
+          toggleMute: () => {
+            muted = !muted;
+            try {
+              localStorage.setItem('gyaner_asor_muted', muted ? '1' : '0');
+            } catch (e) {}
+            if (!muted) {
+              tone(540, 0.06, 'sine', 0.08, 0, 660);
+            }
+            return muted;
+          },
+          click: () => {
+            tone(520, 0.05, 'triangle', 0.07, 0, 340);
+          },
+          correct: (streak) => {
+            tone(523.25, 0.14, 'sine', 0.13, 0);      // C5
+            tone(659.25, 0.16, 'sine', 0.13, 0.07);   // E5
+            tone(783.99, 0.24, 'sine', 0.14, 0.14);   // G5
+            if (streak >= 3) {
+              tone(1046.5, 0.28, 'triangle', 0.12, 0.22); // C6 combo sparkle
+            }
+          },
+          wrong: () => {
+            tone(230, 0.18, 'triangle', 0.12, 0, 175);
+            tone(175, 0.24, 'sawtooth', 0.06, 0.12, 125);
+          },
+          tick: (urgent) => {
+            tone(urgent ? 1046 : 840, 0.045, 'sine', urgent ? 0.08 : 0.05, 0);
+          },
+          lifeline: () => {
+            tone(440, 0.12, 'sine', 0.1, 0, 660);
+            tone(660, 0.16, 'sine', 0.1, 0.08, 990);
+          },
+          fanfare: () => {
+            const notes = [
+              { f: 523.25, d: 0.15, t: 0 },
+              { f: 659.25, d: 0.15, t: 0.11 },
+              { f: 783.99, d: 0.15, t: 0.22 },
+              { f: 1046.5, d: 0.45, t: 0.34 }
+            ];
+            notes.forEach((n) => tone(n.f, n.d, 'triangle', 0.13, n.t));
+          }
+        };
+      })();
+
+      /* ---------------- Persistent High Scores ---------------- */
+      const STORAGE_KEY = 'gyaner_asor_scores_v1';
+
+      function loadScores() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { best: 0, classicBest: 0, survivalBest: 0 };
+          const parsed = JSON.parse(raw);
+          return {
+            best: Number(parsed.best) || 0,
+            classicBest: Number(parsed.classicBest) || 0,
+            survivalBest: Number(parsed.survivalBest) || 0
+          };
+        } catch (e) {
+          return { best: 0, classicBest: 0, survivalBest: 0 };
+        }
+      }
+
+      function saveScore(mode, score) {
+        const current = loadScores();
+        const isNewOverallBest = score > current.best;
+        current.best = Math.max(current.best, score);
+        if (mode === 'classic') {
+          current.classicBest = Math.max(current.classicBest, score);
+        } else {
+          current.survivalBest = Math.max(current.survivalBest, score);
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+        } catch (e) {}
+        return { scores: current, isNewBest: isNewOverallBest };
+      }
+
+      /* ---------------- Utility Functions ---------------- */
+      function shuffleArray(arr) {
+        const copy = arr.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = tmp;
+        }
+        return copy;
+      }
+
+      function prepareQuestion(rawQ) {
+        const tagged = rawQ.options.map((text, idx) => ({
+          text,
+          isCorrect: idx === rawQ.answer
+        }));
+        const shuffledOpts = shuffleArray(tagged);
+        return {
+          category: rawQ.category,
+          q: rawQ.q,
+          options: shuffledOpts.map((o) => o.text),
+          answer: shuffledOpts.findIndex((o) => o.isCorrect),
+          explanation: rawQ.explanation
+        };
+      }
+
+      /* ---------------- Confetti Engine ---------------- */
+      const Confetti = (() => {
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animId = null;
+
+        function resize() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        function launch() {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          stop();
+          resize();
+          const colors = ['#f59e0b', '#10b981', '#38bdf8', '#f43f5e', '#fde047'];
+          particles = [];
+          const count = Math.min(110, Math.floor(window.innerWidth / 6));
+          for (let i = 0; i < count; i++) {
+            particles.push({
+              x: canvas.width * (0.2 + Math.random() * 0.6),
+              y: canvas.height * 0.25 + (Math.random() * 40 - 20),
+              vx: (Math.random() - 0.5) * 11,
+              vy: -Math.random() * 9 - 3,
+              w: Math.random() * 8 + 5,
+              h: Math.random() * 5 + 4,
+              color: colors[i % colors.length],
+              rot: Math.random() * Math.PI * 2,
+              vRot: (Math.random() - 0.5) * 0.25,
+              alpha: 1
+            });
+          }
+
+          function frame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let alive = false;
+            for (let i = 0; i < particles.length; i++) {
+              const p = particles[i];
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.24;
+              p.vx *= 0.99;
+              p.rot += p.vRot;
+              if (p.y > canvas.height * 0.78) {
+                p.alpha -= 0.025;
+              }
+              if (p.alpha > 0 && p.y < canvas.height + 30) {
+                alive = true;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+              }
+            }
+            if (alive) {
+              animId = requestAnimationFrame(frame);
+            } else {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+              animId = null;
+            }
+          }
+          animId = requestAnimationFrame(frame);
+        }
+
+        function stop() {
+          if (animId) {
+            cancelAnimationFrame(animId);
+            animId = null;
+          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        return { launch, stop };
+      })();
+
+      /* ---------------- Game State & DOM References ---------------- */
+      const CLASSIC_QUESTIONS = 10;
+      const QUESTION_SECONDS = 15;
+      const MAX_LIVES = 3;
+
+      const state = {
+        screen: 'home', // 'home' | 'quiz' | 'result'
+        selectedMode: 'classic',
+        selectedCategory: 'all',
+        deck: [],
+        reserveDeck: [],
+        currentIndex: 0,
+        totalQuestionsTarget: CLASSIC_QUESTIONS,
+        answeredCount: 0,
+        correctCount: 0,
+        score: 0,
+        bonusTotal: 0,
+        streak: 0,
+        bestStreak: 0,
+        lives: MAX_LIVES,
+        lifelines: { fifty: true, time: true, skip: true },
+        roundMaxSeconds: QUESTION_SECONDS,
+        timeRemainingMs: QUESTION_SECONDS * 1000,
+        lastWholeSec: QUESTION_SECONDS,
+        timerRaf: null,
+        lastFrameTime: 0,
+        questionLocked: false
+      };
+
+      const dom = {
+        screenHome: document.getElementById('screen-home'),
+        screenQuiz: document.getElementById('screen-quiz'),
+        screenResult: document.getElementById('screen-result'),
+        topbarBest: document.getElementById('topbar-best-score'),
+        homeClassicBest: document.getElementById('home-classic-best'),
+        homeSurvivalBest: document.getElementById('home-survival-best'),
+        muteBtn: document.getElementById('mute-btn'),
+        soundOnIcon: document.getElementById('sound-on-icon'),
+        soundOffIcon: document.getElementById('sound-off-icon'),
+        modeBtns: document.querySelectorAll('[data-mode]'),
+        catBtns: document.querySelectorAll('[data-category]'),
+        startBtn: document.getElementById('start-game-btn'),
+        quitBtn: document.getElementById('quit-game-btn'),
+        hudQProgress: document.getElementById('hud-q-progress'),
+        hudCategoryName: document.getElementById('hud-category-name'),
+        hudLives: document.getElementById('hud-lives'),
+        hudStreak: document.getElementById('hud-streak'),
+        hudStreakText: document.getElementById('hud-streak-text'),
+        hudScore: document.getElementById('hud-score'),
+        timerFill: document.getElementById('timer-fill'),
+        timerLabel: document.getElementById('timer-label'),
+        questionCard: document.getElementById('question-card'),
+        questionText: document.getElementById('question-text'),
+        optionsGrid: document.getElementById('options-grid'),
+        feedbackPanel: document.getElementById('feedback-panel'),
+        feedbackHeading: document.getElementById('feedback-heading'),
+        pointsBreakdown: document.getElementById('points-breakdown'),
+        explanationText: document.getElementById('explanation-text'),
+        nextBtn: document.getElementById('next-question-btn'),
+        nextBtnLabel: document.getElementById('next-btn-label'),
+        llFifty: document.getElementById('ll-fifty'),
+        llTime: document.getElementById('ll-time'),
+        llSkip: document.getElementById('ll-skip'),
+        newRecordBanner: document.getElementById('new-record-banner'),
+        resultTitle: document.getElementById('result-title'),
+        resultSubtitle: document.getElementById('result-subtitle'),
+        resScore: document.getElementById('res-score'),
+        resCorrect: document.getElementById('res-correct'),
+        resStreak: document.getElementById('res-streak'),
+        resBonus: document.getElementById('res-bonus'),
+        playAgainBtn: document.getElementById('play-again-btn'),
+        backHomeBtn: document.getElementById('back-home-btn'),
+        quitModal: document.getElementById('quit-modal'),
+        cancelQuitBtn: document.getElementById('cancel-quit-btn'),
+        confirmQuitBtn: document.getElementById('confirm-quit-btn'),
+        toast: document.getElementById('toast')
+      };
+
+      let toastTimer = null;
+      function showToast(msg) {
+        dom.toast.textContent = msg;
+        dom.toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          dom.toast.classList.remove('show');
+        }, 2200);
+      }
+
+      function syncMuteUI() {
+        const isMuted = SoundFX.isMuted();
+        dom.muteBtn.classList.toggle('muted', isMuted);
+        dom.soundOnIcon.style.display = isMuted ? 'none' : 'block';
+        dom.soundOffIcon.style.display = isMuted ? 'block' : 'none';
+      }
+
+      function syncBestScoreUI() {
+        const scores = loadScores();
+        dom.topbarBest.textContent = toBn(scores.best);
+        dom.homeClassicBest.textContent = toBn(scores.classicBest);
+        dom.homeSurvivalBest.textContent = toBn(scores.survivalBest);
+      }
+
+      function showScreen(name) {
+        state.screen = name;
+        dom.screenHome.classList.toggle('active', name === 'home');
+        dom.screenQuiz.classList.toggle('active', name === 'quiz');
+        dom.screenResult.classList.toggle('active', name === 'result');
+        if (name !== 'result') {
+          Confetti.stop();
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* ---------------- Home Controls ---------------- */
+      dom.modeBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          SoundFX.click();
+          state.selectedMode = btn.dataset.mode;
+          dom.modeBtns.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('selected', active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+        });
+      });
+
+      dom.catBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          SoundFX.click();
+          state.selectedCategory = btn.dataset.category;
+          dom.catBtns.forEach((b) => {
+            const active = b === btn;
+            b.classList.toggle('selected', active);
+            b.setAttribute('aria-pressed', String(active));
+          });
+        });
+      });
+
+      dom.muteBtn.addEventListener('click', () => {
+        const nowMuted = SoundFX.toggleMute();
+        syncMuteUI();
+        showToast(nowMuted ? 'শব্দ বন্ধ করা হয়েছে' : 'শব্দ চালু করা হয়েছে');
+      });
+
+      /* ---------------- Timer Loop ---------------- */
+      function stopTimer() {
+        if (state.timerRaf) {
+          cancelAnimationFrame(state.timerRaf);
+          state.timerRaf = null;
+        }
+      }
+
+      function renderTimerVisuals() {
+        const ratio = Math.max(0, Math.min(1, state.timeRemainingMs / (state.roundMaxSeconds * 1000)));
+        const secCeil = Math.max(0, Math.ceil(state.timeRemainingMs / 1000));
+        dom.timerFill.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
+        dom.timerFill.classList.toggle('warning', secCeil <= 8 && secCeil > 5);
+        dom.timerFill.classList.toggle('danger', secCeil <= 5);
+        dom.timerLabel.classList.toggle('danger', secCeil <= 5);
+        dom.timerLabel.textContent = toBn(secCeil) + ' সে.';
+      }
+
+      function startTimer() {
+        stopTimer();
+        state.lastFrameTime = performance.now();
+        state.lastWholeSec = Math.ceil(state.timeRemainingMs / 1000);
+        renderTimerVisuals();
+
+        function tickFrame(now) {
+          if (state.questionLocked || state.screen !== 'quiz') {
+            state.timerRaf = null;
+            return;
+          }
+          const dt = now - state.lastFrameTime;
+          state.lastFrameTime = now;
+          state.timeRemainingMs = Math.max(0, state.timeRemainingMs - dt);
+
+          const wholeSec = Math.ceil(state.timeRemainingMs / 1000);
+          if (wholeSec < state.lastWholeSec) {
+            state.lastWholeSec = wholeSec;
+            if (wholeSec >= 1 && wholeSec <= 5) {
+              SoundFX.tick(wholeSec <= 2);
+            }
+          }
+
+          renderTimerVisuals();
+
+          if (state.timeRemainingMs <= 0) {
+            state.timerRaf = null;
+            handleTimeout();
+            return;
+          }
+          state.timerRaf = requestAnimationFrame(tickFrame);
+        }
+
+        state.timerRaf = requestAnimationFrame(tickFrame);
+      }
+
+      /* ---------------- HUD & Lifelines Rendering ---------------- */
+      function renderLives() {
+        if (state.selectedMode !== 'survival') {
+          dom.hudLives.style.display = 'none';
+          return;
+        }
+        dom.hudLives.style.display = 'inline-flex';
+        let html = '';
+        for (let i = 0; i < MAX_LIVES; i++) {
+          const alive = i < state.lives;
+          html += `<svg class="heart-svg ${alive ? '' : 'lost'}" viewBox="0 0 24 24" fill="${alive ? '#ef4444' : 'none'}" stroke="#ef4444" stroke-width="2" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>`;
+        }
+        html += `<span class="tabular" style="margin-left:2px;">${toBn(state.lives)}/${toBn(MAX_LIVES)}</span>`;
+        dom.hudLives.innerHTML = html;
+      }
+
+      function renderHUD() {
+        if (state.selectedMode === 'classic') {
+          dom.hudQProgress.textContent = `প্রশ্ন ${toBn(state.currentIndex + 1)}/${toBn(state.totalQuestionsTarget)}`;
+        } else {
+          dom.hudQProgress.textContent = `প্রশ্ন ${toBn(state.currentIndex + 1)}`;
+        }
+        const currentQ = state.deck[state.currentIndex];
+        const catTitle = state.selectedCategory === 'all' && currentQ
+          ? CATEGORY_META[currentQ.category].name
+          : CATEGORY_META[state.selectedCategory].name;
+        dom.hudCategoryName.textContent = catTitle;
+        dom.hudScore.textContent = toBn(state.score);
+
+        if (state.streak >= 2) {
+          dom.hudStreak.style.display = 'inline-flex';
+          dom.hudStreak.classList.toggle('hot', state.streak >= 3);
+          dom.hudStreakText.textContent = `ধারা ${toBn(state.streak)}`;
+        } else {
+          dom.hudStreak.style.display = 'none';
+        }
+        renderLives();
+      }
+
+      function renderLifelines() {
+        const disabledAll = state.questionLocked;
+        dom.llFifty.disabled = !state.lifelines.fifty || disabledAll;
+        dom.llFifty.classList.toggle('used', !state.lifelines.fifty);
+
+        dom.llTime.disabled = !state.lifelines.time || disabledAll;
+        dom.llTime.classList.toggle('used', !state.lifelines.time);
+
+        const canSkip = state.lifelines.skip && !disabledAll && state.reserveDeck.length > 0;
+        dom.llSkip.disabled = !canSkip;
+        dom.llSkip.classList.toggle('used', !state.lifelines.skip);
+      }
+
+      /* ---------------- Start & Render Question ---------------- */
+      function startGame() {
+        SoundFX.click();
+        Confetti.stop();
+
+        const poolRaw = state.selectedCategory === 'all'
+          ? QUESTION_BANK
+          : QUESTION_BANK.filter((item) => item.category === state.selectedCategory);
+
+        const shuffled = shuffleArray(poolRaw).map(prepareQuestion);
+
+        if (state.selectedMode === 'classic') {
+          state.totalQuestionsTarget = Math.min(CLASSIC_QUESTIONS, shuffled.length);
+          state.deck = shuffled.slice(0, state.totalQuestionsTarget);
+          state.reserveDeck = shuffled.slice(state.totalQuestionsTarget);
+        } else {
+          // Leave up to 1-2 reserves if available, or all remaining in reserve for skip lifeline
+          state.totalQuestionsTarget = shuffled.length;
+          state.deck = shuffled.slice(0, Math.max(1, shuffled.length - 1));
+          state.reserveDeck = shuffled.slice(Math.max(1, shuffled.length - 1));
+        }
+
+        state.currentIndex = 0;
+        state.answeredCount = 0;
+        state.correctCount = 0;
+        state.score = 0;
+        state.bonusTotal = 0;
+        state.streak = 0;
+        state.bestStreak = 0;
+        state.lives = MAX_LIVES;
+        state.lifelines = { fifty: true, time: true, skip: true };
+        state.questionLocked = false;
+
+        showScreen('quiz');
+        loadCurrentQuestion();
+      }
+
+      function loadCurrentQuestion() {
+        const qObj = state.deck[state.currentIndex];
+        if (!qObj) {
+          finishGame();
+          return;
+        }
+
+        state.questionLocked = false;
+        state.roundMaxSeconds = QUESTION_SECONDS;
+        state.timeRemainingMs = QUESTION_SECONDS * 1000;
+
+        // Re-trigger card entrance animation cleanly
+        dom.questionCard.classList.remove('card-enter');
+        void dom.questionCard.offsetWidth;
+        dom.questionCard.classList.add('card-enter');
+
+        dom.questionText.textContent = qObj.q;
+        dom.feedbackPanel.className = 'feedback-panel';
+        dom.optionsGrid.innerHTML = '';
+
+        qObj.options.forEach((optText, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'option-btn';
+          btn.dataset.index = String(idx);
+          btn.innerHTML = `
+            <span class="option-key">${OPTION_KEYS[idx]}</span>
+            <span class="option-text"></span>
+            <span class="option-status-icon" aria-hidden="true"></span>
+          `;
+          btn.querySelector('.option-text').textContent = optText;
+          btn.addEventListener('click', () => handleAnswer(idx));
+          dom.optionsGrid.appendChild(btn);
+        });
+
+        renderHUD();
+        renderLifelines();
+        startTimer();
+      }
+
+      /* ---------------- Answer & Timeout Handling ---------------- */
+      function lockOptions(selectedIdx, correctIdx) {
+        const buttons = dom.optionsGrid.querySelectorAll('.option-btn');
+        buttons.forEach((btn, idx) => {
+          btn.disabled = true;
+          const iconSlot = btn.querySelector('.option-status-icon');
+          if (idx === correctIdx) {
+            btn.classList.add('correct');
+            iconSlot.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+          } else if (idx === selectedIdx) {
+            btn.classList.add('wrong');
+            iconSlot.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+          }
+        });
+      }
+
+      function showFeedback(isCorrect, isTimeout, breakdownText, explanation) {
+        dom.feedbackPanel.className = 'feedback-panel show ' + (isCorrect ? 'is-correct' : 'is-wrong');
+        if (isCorrect) {
+          dom.feedbackHeading.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>সঠিক উত্তর!</span>
+          `;
+        } else if (isTimeout) {
+          dom.feedbackHeading.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>সময় শেষ!</span>
+          `;
+        } else {
+          dom.feedbackHeading.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <span>ভুল উত্তর!</span>
+          `;
+        }
+
+        dom.pointsBreakdown.textContent = breakdownText;
+        dom.explanationText.textContent = explanation;
+
+        const isLastClassic = state.selectedMode === 'classic' && state.currentIndex >= state.deck.length - 1;
+        const isSurvivalDead = state.selectedMode === 'survival' && state.lives <= 0;
+        const isDeckDone = state.currentIndex >= state.deck.length - 1;
+
+        dom.nextBtnLabel.textContent = (isLastClassic || isSurvivalDead || isDeckDone)
+          ? 'ফলাফল দেখুন'
+          : 'পরবর্তী প্রশ্ন';
+      }
+
+      function handleAnswer(selectedIdx) {
+        if (state.questionLocked) return;
+        state.questionLocked = true;
+        stopTimer();
+
+        const qObj = state.deck[state.currentIndex];
+        const isCorrect = selectedIdx === qObj.answer;
+        state.answeredCount += 1;
+
+        lockOptions(selectedIdx, qObj.answer);
+        renderLifelines();
+
+        let breakdownText = '';
+        if (isCorrect) {
+          state.correctCount += 1;
+          state.streak += 1;
+          state.bestStreak = Math.max(state.bestStreak, state.streak);
+
+          const basePts = 100;
+          const speedSec = Math.max(0, Math.floor(state.timeRemainingMs / 1000));
+          const speedBonus = speedSec * 10;
+          const streakBonus = state.streak >= 3 ? Math.min(150, 50 + (state.streak - 3) * 25) : 0;
+
+          const totalEarned = basePts + speedBonus + streakBonus;
+          state.score += totalEarned;
+          state.bonusTotal += speedBonus + streakBonus;
+
+          const parts = [`+${toBn(basePts)} মূল`];
+          if (speedBonus > 0) parts.push(`+${toBn(speedBonus)} দ্রুতগতি`);
+          if (streakBonus > 0) parts.push(`+${toBn(streakBonus)} ধারা বোনাস`);
+          breakdownText = parts.join(' · ');
+
+          SoundFX.correct(state.streak);
+        } else {
+          state.streak = 0;
+          if (state.selectedMode === 'survival') {
+            state.lives = Math.max(0, state.lives - 1);
+            breakdownText = state.lives > 0 ? `১টি লাইফ কমেছে (${toBn(state.lives)} বাকি)` : 'সব লাইফ শেষ!';
+          } else {
+            breakdownText = '+০ পয়েন্ট';
+          }
+          SoundFX.wrong();
+        }
+
+        renderHUD();
+        showFeedback(isCorrect, false, breakdownText, qObj.explanation);
+      }
+
+      function handleTimeout() {
+        if (state.questionLocked) return;
+        state.questionLocked = true;
+        stopTimer();
+
+        const qObj = state.deck[state.currentIndex];
+        state.answeredCount += 1;
+        state.streak = 0;
+
+        lockOptions(-1, qObj.answer);
+        renderLifelines();
+
+        let breakdownText = '+০ পয়েন্ট';
+        if (state.selectedMode === 'survival') {
+          state.lives = Math.max(0, state.lives - 1);
+          breakdownText = state.lives > 0 ? `১টি লাইফ কমেছে (${toBn(state.lives)} বাকি)` : 'সব লাইফ শেষ!';
+        }
+
+        SoundFX.wrong();
+        renderHUD();
+        showFeedback(false, true, breakdownText, qObj.explanation);
+      }
+
+      function advanceQuestion() {
+        SoundFX.click();
+        if (state.selectedMode === 'survival' && state.lives <= 0) {
+          finishGame();
+          return;
+        }
+        if (state.currentIndex >= state.deck.length - 1) {
+          finishGame();
+          return;
+        }
+        state.currentIndex += 1;
+        loadCurrentQuestion();
+      }
+
+      dom.nextBtn.addEventListener('click', advanceQuestion);
+
+      /* ---------------- Lifelines Logic ---------------- */
+      dom.llFifty.addEventListener('click', () => {
+        if (!state.lifelines.fifty || state.questionLocked) return;
+        const qObj = state.deck[state.currentIndex];
+        const wrongIndices = [0, 1, 2, 3].filter((i) => i !== qObj.answer);
+        const toEliminate = shuffleArray(wrongIndices).slice(0, 2);
+        const buttons = dom.optionsGrid.querySelectorAll('.option-btn');
+        toEliminate.forEach((idx) => {
+          if (buttons[idx]) {
+            buttons[idx].classList.add('eliminated');
+            buttons[idx].disabled = true;
+          }
+        });
+        state.lifelines.fifty = false;
+        SoundFX.lifeline();
+        renderLifelines();
+        showToast('৫০:৫০ ব্যবহার হয়েছে — ২টি ভুল উত্তর বাদ দেওয়া হলো');
+      });
+
+      dom.llTime.addEventListener('click', () => {
+        if (!state.lifelines.time || state.questionLocked) return;
+        state.lifelines.time = false;
+        state.timeRemainingMs += 10000;
+        if (state.timeRemainingMs > state.roundMaxSeconds * 1000) {
+          state.roundMaxSeconds = Math.ceil(state.timeRemainingMs / 1000);
+        }
+        state.lastWholeSec = Math.ceil(state.timeRemainingMs / 1000);
+        SoundFX.lifeline();
+        renderTimerVisuals();
+        renderLifelines();
+        showToast('+১০ সেকেন্ড অতিরিক্ত সময় যোগ করা হয়েছে');
+      });
+
+      dom.llSkip.addEventListener('click', () => {
+        if (!state.lifelines.skip || state.questionLocked || state.reserveDeck.length === 0) return;
+        state.lifelines.skip = false;
+        stopTimer();
+        const replacement = state.reserveDeck.shift();
+        state.deck[state.currentIndex] = replacement;
+        SoundFX.lifeline();
+        showToast('প্রশ্ন পরিবর্তন করা হয়েছে');
+        loadCurrentQuestion();
+      });
+
+      /* ---------------- Finish & Results ---------------- */
+      function finishGame() {
+        stopTimer();
+        const { isNewBest } = saveScore(state.selectedMode, state.score);
+        syncBestScoreUI();
+
+        const totalAsked = Math.max(1, state.answeredCount);
+        const accuracy = Math.round((state.correctCount / totalAsked) * 100);
+        const isGoodScore = accuracy >= 60 || (state.selectedMode === 'survival' && state.correctCount >= 5) || isNewBest;
+
+        dom.newRecordBanner.classList.toggle('show', isNewBest && state.score > 0);
+
+        if (accuracy >= 85 || (state.selectedMode === 'survival' && state.correctCount >= 10)) {
+          dom.resultTitle.textContent = 'অসাধারণ প্রতিভা!';
+          dom.resultSubtitle.textContent = 'আপনার সাধারণ জ্ঞানের দক্ষতা সত্যিই প্রশংসনীয়।';
+        } else if (isGoodScore) {
+          dom.resultTitle.textContent = 'দারুণ খেলেছেন!';
+          dom.resultSubtitle.textContent = 'চমৎকার পারফরম্যান্স, পরের রাউন্ডে আরও বড় স্কোর গড়ুন।';
+        } else if (state.correctCount >= 3) {
+          dom.resultTitle.textContent = 'ভালো চেষ্টা!';
+          dom.resultSubtitle.textContent = 'আরও একটু দ্রুত ও মনোযোগী হলেই সেরা স্কোর হাতের মুঠোয়।';
+        } else {
+          dom.resultTitle.textContent = 'আবার চেষ্টা করুন!';
+          dom.resultSubtitle.textContent = 'প্রতিটি রাউন্ডেই নতুন প্রশ্ন ও শেখার সুযোগ থাকছে।';
+        }
+
+        dom.resScore.textContent = toBn(state.score);
+        dom.resCorrect.textContent = `${toBn(state.correctCount)}/${toBn(state.answeredCount)} (${toBn(accuracy)}%)`;
+        dom.resStreak.textContent = toBn(state.bestStreak);
+        dom.resBonus.textContent = '+' + toBn(state.bonusTotal);
+
+        showScreen('result');
+
+        if (isGoodScore && state.score > 0) {
+          SoundFX.fanfare();
+          Confetti.launch();
+        }
+      }
+
+      /* ---------------- Navigation & Modal Controls ---------------- */
+      dom.startBtn.addEventListener('click', startGame);
+
+      dom.playAgainBtn.addEventListener('click', startGame);
+
+      dom.backHomeBtn.addEventListener('click', () => {
+        SoundFX.click();
+        showScreen('home');
+      });
+
+      dom.quitBtn.addEventListener('click', () => {
+        SoundFX.click();
+        dom.quitModal.classList.add('show');
+      });
+
+      dom.cancelQuitBtn.addEventListener('click', () => {
+        SoundFX.click();
+        dom.quitModal.classList.remove('show');
+      });
+
+      dom.confirmQuitBtn.addEventListener('click', () => {
+        SoundFX.click();
+        stopTimer();
+        dom.quitModal.classList.remove('show');
+        showScreen('home');
+      });
+
+      dom.quitModal.addEventListener('click', (e) => {
+        if (e.target === dom.quitModal) {
+          dom.quitModal.classList.remove('show');
+        }
+      });
+
+      /* ---------------- Keyboard Support (Desktop Polish) ---------------- */
+      document.addEventListener('keydown', (e) => {
+        if (dom.quitModal.classList.contains('show')) {
+          if (e.key === 'Escape') dom.quitModal.classList.remove('show');
+          return;
+        }
+        if (state.screen !== 'quiz') return;
+
+        if (!state.questionLocked) {
+          const map = { '1': 0, '2': 1, '3': 2, '4': 3 };
+          if (map[e.key] !== undefined) {
+            const btn = dom.optionsGrid.querySelectorAll('.option-btn')[map[e.key]];
+            if (btn && !btn.disabled) btn.click();
+          }
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          advanceQuestion();
+        }
+      });
+
+      /* ---------------- Initial Hydration ---------------- */
+      syncMuteUI();
+      syncBestScoreUI();
+    })();
+  </script>
+</body>
+</html>
