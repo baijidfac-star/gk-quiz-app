@@ -1,0 +1,6 @@
+{
+  "name": "জ্ঞানের আসর (GK Quiz)",
+  "description": "বাংলা সাধারণ জ্ঞানের কুইজ গেম — ক্লাসিক ও সারভাইভাল মোড, ১৫ সেকেন্ডের টাইমার, ৩টি লাইফলাইন, সাউন্ড ইফেক্ট ও হাই স্কোরসহ।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

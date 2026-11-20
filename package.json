@@ -1,0 +1,12 @@
+{
+  "name": "gyaner-asor-gk-quiz",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs",
+    "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist',{recursive:true}); fs.copyFileSync('index.html','dist/index.html'); console.log('Built dist/index.html');\"",
+    "lint": "node --check server.mjs && node -e \"const fs=require('fs'); const html=fs.readFileSync('index.html','utf8'); const m=html.match(/<script>([\\s\\S]*?)<\\/script>/); if(!m) throw new Error('Missing script'); new Function(m[1]); console.log('Lint OK');\""
+  }
+}
